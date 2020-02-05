@@ -1,5 +1,7 @@
 <template>
-  <div>文章内容</div>
+  <div class="container">
+    <van-nav-bar left-arrow @click-left="$router.back()" title="文章内容"></van-nav-bar>
+  </div>
 </template>
 
 <script>

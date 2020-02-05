@@ -1,5 +1,7 @@
 <template>
-  <div>编辑资料组件</div>
+  <div class="container">
+    <van-nav-bar  left-arrow @click-left="$router.back()" right-text="保存" title="编辑资料"></van-nav-bar>
+  </div>
 </template>
 
 <script>
