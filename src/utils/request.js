@@ -33,3 +33,4 @@ instance.nterceptors.response.user(function (response) {
 }, function (error) {
   return Promise.reject(error)
 })
+export default instance
