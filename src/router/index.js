@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
 // 引入模板
 // import Home from '@/views/home'
 const Layout = () => import ('@/views/layout') // 布局组件
