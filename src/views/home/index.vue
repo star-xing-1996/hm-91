@@ -2,12 +2,7 @@
   <div class="container">
   <van-tabs swipeable v-model="activeIndex">
   <van-tab  :title="'标签' +item" v-for="item in 10" :key="item">
-    <!-- 设置滚动条，为做阅读记忆留下伏笔 -->
-    <div class="scroll-wrapper">
-      <van-cell-group>
-        <van-cell v-for="obj in 20" :key="obj" :title="item"></van-cell>
-      </van-cell-group>
-    </div>
+    <article-list></article-list>
   </van-tab>
 
 </van-tabs>
@@ -18,7 +13,9 @@
 </template>
 
 <script>
+import ArticleList from './components/article-list'
 export default {
+  components: { ArticleList },
   name: 'home',
   data () {
     return {
