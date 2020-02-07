@@ -2,7 +2,7 @@
   <div class="container">
   <van-tabs swipeable v-model="activeIndex">
   <van-tab  :title="channel.name" v-for="channel in channels" :key="channel.id">
-    <article-list></article-list>
+    <article-list :channel_id="channel.id"></article-list>
   </van-tab>
 
 </van-tabs>

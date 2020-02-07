@@ -4,23 +4,23 @@
         <van-pull-refresh v-model="downLoading" @refresh="onRefresh" :success-text="refreshSuccessText">
         <van-list v-model="upLoading" :finished="finished"  finished-text="没有更多了"
   @load="onLoad">
-        <van-cell v-for="article in articles" :key="article" >
+        <van-cell v-for="article in articles" :key="article.art_id.toString()" >
             <div class="article_item">
-  <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
+  <h3 class="van-ellipsis">{{article.title}}</h3>
   <!-- 三图模式 -->
-  <div class="img_box">
-     <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg"/>
-     <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg"/>
-     <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg"/>
+  <div class="img_box" v-if="article.cover.type === 3">
+     <van-image class="w33" fit="cover" :src="article.cover.images[0]"/>
+     <van-image class="w33" fit="cover" :src="article.cover.images[1]"/>
+     <van-image class="w33" fit="cover" :src="article.cover.images[2]"/>
   </div>
   <!-- 单图模式 -->
-   <div class="img_box">
+   <div class="img_box" v-else-if="article.cover.type === 1">
       <van-image class="w100" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg"/>
   </div>
   <div class="info_box">
-     <span>你像一阵风</span>
-     <span>8评论</span>
-     <span>10分钟前</span>
+     <span>{{article.aut_name}}</span>
+     <span>{{ article.comm_count }}评论</span>
+     <span>{{ article.pubdate }}</span>
      <span class="close"><van-icon name="cross"></van-icon></span>
   </div>
 </div>
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { getArticles } from '@/api/article'
 export default {
   name: 'article-list',
   data () {
@@ -39,20 +40,40 @@ export default {
       refreshSuccessText: '更新成功', //  文本
       upLoading: false, // 上拉是否加载数据
       finished: false, // 上拉是否完成加载
-      articles: []// 定义文章
+      articles: [], // 定义文章
+      timestamp: null// 定义一个时间戳，这个时间戳用来告诉服务器，
+    }
+  },
+  // 父传子接收数据
+  props: {
+    channel_id: {
+      type: Number, // 指定要传的props的类型
+      required: true, // 要求必须传
+      default: null// 给props一个默认值
     }
   },
   methods: {
-    onLoad () {
-      setTimeout(() => {
-        if (this.articles.length < 50) {
-          let arr = Array.from(Array(10), (value, index) => index + this.articles.length + 1)
-          this.articles.push(...arr)
-          this.upLoading = false // 关闭状态
-        } else {
-          this.finished = true// 停止追加
-        }
-      }, 1000)
+    async onLoad () {
+      // setTimeout(() => {
+      //   if (this.articles.length < 50) {
+      //     let arr = Array.from(Array(10), (value, index) => index + this.articles.length + 1)
+      //     this.articles.push(...arr)
+      //     this.upLoading = false // 关闭状态
+      //   } else {
+      //     this.finished = true// 停止追加
+      //   }
+      // }, 1000)
+      let data = await getArticles({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
+      this.articles.push(...data.results)
+      // 关掉加载的状态
+      this.upLoading = false
+      // 判断是否有历史时间戳，如果有，可以继续往下看，否则就不看
+      if (data.pre_timestamp) {
+        this.timestamp = data.pre_timestamp
+      } else {
+        // 否则认为没有历史，就不继续加载了
+        this.finished = true// 停止追加
+      }
     },
     onRefresh () {
       setTimeout(() => {
