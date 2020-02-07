@@ -75,13 +75,26 @@ export default {
         this.finished = true// 停止追加
       }
     },
-    onRefresh () {
-      setTimeout(() => {
-        let arr = Array.from(Array(10), (value, index) => ('追加' + (index + 1)))
-        this.articles.unshift(...arr)
-        this.downLoading = false// 关闭状态
-        this.refreshSuccessText = `更新了${arr.length}条数据`
-      }, 1000)
+    async onRefresh () {
+      // setTimeout(() => {
+      //   let arr = Array.from(Array(10), (value, index) => ('追加' + (index + 1)))
+      //   this.articles.unshift(...arr)
+      //   this.downLoading = false// 关闭状态
+      //   this.refreshSuccessText = `更新了${arr.length}条数据`
+      // }, 1000)
+      let data = await getArticles({ channel_id: this.channel_id, timestamp: Date.now() })
+      this.downLoading = false // 关掉下拉状态
+      if (data.results.length) {
+        this.articles = data.results // 将历史数据全部覆盖掉
+        // 如果还需要继续往下拉，把原来的状态打开
+        this.finished = true
+        // 获取此次事件的时间戳
+        this.timestamp = data.pre_timestamp
+        this.refreshSuccessText = `更新了${data.results.length}条数据`
+      } else {
+        // 如果没有数据更新，什么都不需要变化
+        this.refreshSuccessText = '已是最新数据'
+      }
     }
   }
 }
