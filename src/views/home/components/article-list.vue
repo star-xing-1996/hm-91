@@ -20,7 +20,7 @@
   <div class="info_box">
      <span>{{article.aut_name}}</span>
      <span>{{ article.comm_count }}评论</span>
-     <span>{{ article.pubdate }}</span>
+     <span>{{ article.pubdate | relTime}}</span>
      <span class="close"><van-icon name="cross"></van-icon></span>
   </div>
 </div>
@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     async onLoad () {
+      await this.$sleep()
       // setTimeout(() => {
       //   if (this.articles.length < 50) {
       //     let arr = Array.from(Array(10), (value, index) => index + this.articles.length + 1)
@@ -76,6 +77,7 @@ export default {
       }
     },
     async onRefresh () {
+      await this.$sleep()
       // setTimeout(() => {
       //   let arr = Array.from(Array(10), (value, index) => ('追加' + (index + 1)))
       //   this.articles.unshift(...arr)
