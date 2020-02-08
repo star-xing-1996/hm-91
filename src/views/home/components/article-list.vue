@@ -35,6 +35,7 @@
 <script>
 import { mapState } from 'vuex'
 import { getArticles } from '@/api/article'
+import eventBus from '@/utils/eventBus'
 export default {
   name: 'article-list',
   data () {
@@ -58,6 +59,18 @@ export default {
   // 将user的数据映射到子组件中来
   computed: {
     ...mapState(['user'])
+  },
+  created () {
+    // 开启监听
+    eventBus.$on('deArticles', (articleId, channelId) => {
+      if (this.channel_id === channelId) {
+        let index = this.articles.findIndex(item => item.art_id.toString() === articleId)
+        // 如果index大于-1，表示找到了就要删除
+        if (index > -1) {
+          this.articles.splice(index, 1)// 删除不喜欢的文章
+        }
+      }
+    })
   },
   methods: {
     async onLoad () {
