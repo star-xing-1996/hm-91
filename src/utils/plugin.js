@@ -7,7 +7,7 @@ export default {
   install (Vue) {
     //   插件
     Vue.prototype.$gnotify = (params) =>
-      Vue.prototype.$notify({ duration: 800, ...params }) // 小伎俩
+      Vue.prototype.$notify({ duration: 200, ...params }) // 小伎俩
     Vue.prototype.$sleep = sleep// 封装一个休眠函数
     Vue.filter('relTime', relTime)
   }

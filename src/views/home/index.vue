@@ -2,17 +2,22 @@
   <div class="container">
   <van-tabs swipeable v-model="activeIndex">
   <van-tab  :title="channel.name" v-for="channel in channels" :key="channel.id">
-    <article-list @showaction="openMoreAction" :channel_id="channel.id"></article-list>
+    <article-list @showaction="openMoreAction"  :channel_id="channel.id"></article-list>
   </van-tab>
 
 </van-tabs>
-<span class="bar_btn">
+<!-- 编辑频道的图标 -->
+<span class="bar_btn" @click="showChannelEdit=true">
 <van-icon name="wap-nav" />
 </span>
 <!-- 放置一个弹层 -->
 <van-popup v-model="showMoreAction" :style="{width:'80%'}">
-<more-action @dislike="dislike"></more-action>
+<more-action @dislike="dislikeOrReport($event,'dislike')" @report="dislikeOrReport($event,'report')"></more-action>
 </van-popup>
+<!-- 放置一个编辑频道的组件 -->
+<van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
+  <channel-edit></channel-edit>
+</van-action-sheet>
   </div>
 </template>
 
@@ -20,32 +25,59 @@
 import { getMyChannels } from '@/api/channels'
 import ArticleList from './components/article-list'
 import MoreAction from './components/more-action'
-import { disLikeArticle } from '@/api/article'
+import { disLikeArticle, reportArticle } from '@/api/article'
 import eventBus from '@/utils/eventBus'
+import ChannelEdit from './components/channel-edit'
 export default {
-  components: { ArticleList, MoreAction },
+  components: { ArticleList, MoreAction, ChannelEdit },
   name: 'home',
   data () {
     return {
       activeIndex: 0, // 默认启用第0个标签
       channels: [], // 声明频道的方法
       showMoreAction: false, // 控制弹层的显隐
-      articleId: null// 用来接收子组件传过来的id
+      articleId: null, // 用来接收子组件传过来的id
+      showChannelEdit: false// 控制编辑频道组件的显隐
     }
   },
   methods: {
     // 不喜欢的文章
-    async dislike () {
+    // async dislike () {
+    //   try {
+    //     if (this.articleId) {
+    //       await disLikeArticle({
+    //         target: this.articleId
+    //       })
+    //       this.$gnotify({ type: 'success', message: '操作成功' })
+    //       // 触发一个事件，发出一个广播，听到广播的列表，去删除对应的数据
+    //       eventBus.$emit('deArticles', this.articleId, this.channels[this.activeIndex].id)
+    //       this.showMoreAction = false// 关闭弹层
+    //     }
+    //   } catch (error) {
+    //     this.$gnotify({ type: 'danger', message: '操作失败' })
+    //   }
+    // },
+    // // 调用举报文章的接口
+    // async report (type) {
+    //   try {
+    //     await reportArticle({ target: this.articleId, type })
+    //     this.$gnotify({ type: 'success', message: '操作成功' })
+    //     // 触发一个事件，发出一个广播，听到广播的列表，去删除对应的数据
+    //     eventBus.$emit('deArticles', this.articleId, this.channels[this.activeIndex].id)
+    //     this.showMoreAction = false// 关闭弹层
+    //   } catch (error) {
+    //     this.$gnotify({ type: 'danger', message: '操作失败' })
+    //   }
+    // },
+    // 不喜欢或者举报
+    async dislikeOrReport (params, operateType) {
       try {
-        if (this.articleId) {
-          await disLikeArticle({
-            target: this.articleId
-          })
-          this.$gnotify({ type: 'success', message: '操作成功' })
-          // 触发一个事件，发出一个广播，听到广播的列表，去删除对应的数据
-          eventBus.$emit('deArticles', this.articleId, this.channels[this.activeIndex].id)
-          this.showMoreAction = false// 关闭弹层
-        }
+        operateType === 'dislike' ? await disLikeArticle({ target: this.articleId })
+          : await reportArticle({ target: this.articleId, type: params })
+        this.$gnotify({ type: 'success', message: '操作成功' })
+        // 触发一个事件，发出一个广播，听到广播的列表，去删除对应的数据
+        eventBus.$emit('deArticles', this.articleId, this.channels[this.activeIndex].id)
+        this.showMoreAction = false// 关闭弹层
       } catch (error) {
         this.$gnotify({ type: 'danger', message: '操作失败' })
       }
@@ -119,6 +151,17 @@ export default {
     z-index: 1000;
     &::before {
       font-size: 20px;
+    }
+  }
+}
+.van-action-sheet {
+  max-height: 100%;
+  height: 100%;
+  .van-action-sheet__header {
+    background: #3296fa;
+    color: #fff;
+    .van-icon-close {
+      color: #fff;
     }
   }
 }
