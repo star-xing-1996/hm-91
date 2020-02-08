@@ -2,29 +2,41 @@
   <div class="container">
   <van-tabs swipeable v-model="activeIndex">
   <van-tab  :title="channel.name" v-for="channel in channels" :key="channel.id">
-    <article-list :channel_id="channel.id"></article-list>
+    <article-list @showaction="openMoreAction" :channel_id="channel.id"></article-list>
   </van-tab>
 
 </van-tabs>
 <span class="bar_btn">
 <van-icon name="wap-nav" />
 </span>
+<!-- 放置一个弹层 -->
+<van-popup v-model="showMoreAction" :style="{width:'80%'}">
+<more-action></more-action>
+</van-popup>
   </div>
 </template>
 
 <script>
 import { getMyChannels } from '@/api/channels'
 import ArticleList from './components/article-list'
+import MoreAction from './components/more-action'
 export default {
-  components: { ArticleList },
+  components: { ArticleList, MoreAction },
   name: 'home',
   data () {
     return {
       activeIndex: 0, // 默认启用第0个标签
-      channels: []// 声明频道的方法
+      channels: [], // 声明频道的方法
+      showMoreAction: false, // 控制弹层的显隐
+      articleId: null// 用来接收子组件传过来的id
     }
   },
   methods: {
+    // 监听子组件触发的事件，打开弹层
+    openMoreAction (artId) {
+      this.showMoreAction = true
+      this.articleId = artId
+    },
     async getMyChannels () {
       let data = await getMyChannels()
       this.channels = data.channels
