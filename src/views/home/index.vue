@@ -17,14 +17,14 @@
 <!-- 放置一个编辑频道的组件 -->
 <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
 
-  <channel-edit @delChannel="delChannel" :activeIndex="activeIndex" @selectChannel="selectChannel" :channels="channels"></channel-edit>
+  <channel-edit @addChannel="addChannel" @delChannel="delChannel" :activeIndex="activeIndex" @selectChannel="selectChannel" :channels="channels"></channel-edit>
 
 </van-action-sheet>
   </div>
 </template>
 
 <script>
-import { getMyChannels, delChannel } from '@/api/channels'
+import { getMyChannels, delChannel, addChannel } from '@/api/channels'
 import ArticleList from './components/article-list'
 import MoreAction from './components/more-action'
 import { disLikeArticle, reportArticle } from '@/api/article'
@@ -43,6 +43,11 @@ export default {
     }
   },
   methods: {
+    // 添加频道
+    async addChannel (channel) {
+      await addChannel(channel)
+      this.channels.push(channel)// 自身添加一个频道，影响子组件
+    },
     // 删除我的频道
     async delChannel (id) {
       try {

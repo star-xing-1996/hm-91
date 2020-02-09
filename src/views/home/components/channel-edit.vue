@@ -22,7 +22,7 @@
         <van-grid-item v-for="channel in optionalChannels" :key="channel.id">
           <!-- 子组件向父组件传频道id -->
           <span class="f12" >{{channel.name}}</span>
-          <van-icon class="btn" name="plus"></van-icon>
+          <van-icon @click="$emit('addChannel',channel)" class="btn" name="plus"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
