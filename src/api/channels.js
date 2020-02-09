@@ -38,12 +38,12 @@ export function delChannel (id) {
   return new Promise(function (resolve, reject) {
     // 首先判断是游客登录还是用户登录
     let key = store.state.user.token ? CACHE_CHANNEL_U : CACHE_CHANNEL_T
-    let channels = localStorage.getItem(key)// 得到缓存中的数据
+    let channels = JSON.parse(localStorage.getItem(key))// 得到缓存中的数据
     let index = channels.findIndex(item => item.id === id)// 找到对应频道的索引
-    if (index > 1) {
-      channels.split(index, 1)// 直接删除原数组中的方式，第一种方式
+    if (index > -1) {
+      channels.splice(index, 1)// 直接删除原数组中的方式，第一种方式
       // channels = channels.filter(item => item.id !== id)//找到数组中要删除的频道，第二种方式
-      localStorage.setItem(key, JSON.parse(channels))// 重新写入缓存
+      localStorage.setItem(key, JSON.stringify(channels))// 重新写入缓存
       resolve()
     } else {
       reject(new Error('找不到对应的频道'))

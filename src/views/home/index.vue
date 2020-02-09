@@ -17,14 +17,14 @@
 <!-- 放置一个编辑频道的组件 -->
 <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
 
-  <channel-edit :activeIndex="activeIndex" @selectChannel="selectChannel" :channels="channels"></channel-edit>
+  <channel-edit @delChannel="delChannel" :activeIndex="activeIndex" @selectChannel="selectChannel" :channels="channels"></channel-edit>
 
 </van-action-sheet>
   </div>
 </template>
 
 <script>
-import { getMyChannels } from '@/api/channels'
+import { getMyChannels, delChannel } from '@/api/channels'
 import ArticleList from './components/article-list'
 import MoreAction from './components/more-action'
 import { disLikeArticle, reportArticle } from '@/api/article'
@@ -43,6 +43,22 @@ export default {
     }
   },
   methods: {
+    // 删除我的频道
+    async delChannel (id) {
+      try {
+        await delChannel(id)// 表示删除数据成功
+        // 要移除自身data中的channel的数据
+        let index = this.channels.findIndex(item => item.id === id)
+        if (index <= this.activeIndex) {
+          this.activeIndex = this.activeIndex - 1
+        }
+        if (index > -1) {
+          this.channels.splice(index, 1)// 移除当前频道
+        }
+      } catch (error) {
+        this.$gnotify({ type: 'danger', success: '删除频道失败' })
+      }
+    },
     // 切换到对应的频道，关闭弹层
     selectChannel (id) {
       let index = this.channels.findIndex(item => item.id === id)// 获取切换频道的索引

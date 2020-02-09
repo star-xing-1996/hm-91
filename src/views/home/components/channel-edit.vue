@@ -11,7 +11,7 @@
         <van-grid-item v-for="(channel, i) in channels" :key="channel.id">
           <span class="f12" :class="{red:i===activeIndex}" @click="$emit('selectChannel',channel.id)">{{channel.name}}</span>
           <template v-if="i!==0">
-          <van-icon v-show="editing" class="btn" name="cross"></van-icon>
+          <van-icon @click="$emit('delChannel',channel.id)" v-show="editing" class="btn" name="cross"></van-icon>
           </template>
         </van-grid-item>
       </van-grid>
