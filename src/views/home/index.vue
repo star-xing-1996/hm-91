@@ -17,7 +17,7 @@
 <!-- 放置一个编辑频道的组件 -->
 <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
 
-  <channel-edit :channels="channels"></channel-edit>
+  <channel-edit @selectChannel="selectChannel" :channels="channels"></channel-edit>
 
 </van-action-sheet>
   </div>
@@ -43,6 +43,12 @@ export default {
     }
   },
   methods: {
+    // 切换到对应的频道，关闭弹层
+    selectChannel (id) {
+      let index = this.channels.findIndex(item => item.id === id)// 获取切换频道的索引
+      this.activeIndex = index// 将tabs激活标签切换到对应的标签下
+      this.showChannelEdit = false// 关闭弹层
+    },
     // 不喜欢的文章
     // async dislike () {
     //   try {
