@@ -24,3 +24,10 @@ export function reportArticle (data) {
     method: 'post'
   })
 }
+// 封装一个文章搜索的建议
+export function suggestion (params) {
+  return request({
+    url: '/suggestion',
+    params
+  })
+}
