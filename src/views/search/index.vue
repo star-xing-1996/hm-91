@@ -17,7 +17,7 @@
         <van-icon name="delete" @click="clear"></van-icon>
       </div>
       <van-cell-group>
-        <van-cell @click="toSearch(text)" v-for="(item ,index) in historyList" :key="index">
+        <van-cell @click="toResult(item)" v-for="(item ,index) in historyList" :key="index">
           <a class="word_btn">{{item}}</a>
           <van-icon @click.stop="delHistory(index)" class="close_btn" slot="right-icon" name="cross" />
         </van-cell>
@@ -70,7 +70,7 @@ export default {
     },
 
     // 跳到搜索结果页面
-    toSearch (text) {
+    toResult (text) {
       this.$router.push({ path: '/search/result', query: { q: text } })
     },
     // 清空操作
