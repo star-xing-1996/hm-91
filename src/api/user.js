@@ -22,3 +22,9 @@ export function unFollowUser (target) {
     url: `/user/followings/${target}`
   })
 }
+// 获取个人用户信息
+export function getUserInfo () {
+  return request({
+    url: '/user'
+  })
+}

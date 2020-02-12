@@ -95,7 +95,7 @@ export default {
   height: 44px;
   width: 100%;
   background: #f5f5f5;
-  z-index: 9999;
+  z-index: 2;
   .submit {
     font-size: 12px;
     color: #3296fa;
